@@ -1,0 +1,61 @@
+<!DOCTYPE html>
+<html lang="ms">
+<head>
+  <meta charset="UTF-8">
+  <title>Status AFK Abdul</title>
+  <style>
+    body {
+      background: #111;
+      color: #fff;
+      font-family: sans-serif;
+      text-align: center;
+      padding: 40px;
+    }
+    .card {
+      background: #1e1e1e;
+      padding: 30px;
+      border-radius: 20px;
+      box-shadow: 0 0 10px #00ff99;
+      max-width: 500px;
+      margin: auto;
+    }
+    .countdown { font-size: 2.5rem; margin-top: 20px; }
+    .done { font-size: 2rem; color: red; margin-top: 20px; display: none; }
+  </style>
+</head>
+<body>
+  <div class="card">
+    <h1>Status AFK Roblox</h1>
+    <p>Nama: <strong>Abdul</strong></p>
+    <p>Sudah AFK: <strong>8 jam</strong></p>
+    <p>Tinggal: <strong id="remaining">4 jam</strong></p>
+    <div class="countdown" id="countdown">Loading...</div>
+    <div class="done" id="done">✅ AFK Selesai!</div>
+  </div>
+
+  <script>
+    fetch('/api/start')
+      .then(res => res.json())
+      .then(data => {
+        const startTime = data.startTime;
+        const endTime = startTime + 4 * 60 * 60 * 1000;
+        function update() {
+          const now = Date.now();
+          const left = endTime - now;
+          if (left <= 0) {
+            document.getElementById("countdown").style.display = "none";
+            document.getElementById("remaining").textContent = "0 jam";
+            document.getElementById("done").style.display = "block";
+            return;
+          }
+          const hrs = String(Math.floor(left / 3600000)).padStart(2, '0');
+          const min = String(Math.floor((left % 3600000) / 60000)).padStart(2, '0');
+          const sec = String(Math.floor((left % 60000) / 1000)).padStart(2, '0');
+          document.getElementById("countdown").textContent = `${hrs}:${min}:${sec}`;
+        }
+        setInterval(update, 1000);
+        update();
+      });
+  </script>
+</body>
+</html>
